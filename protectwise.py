@@ -7,6 +7,12 @@ import getpass
 from configparser import ConfigParser
 import os
 
+try:
+    input = raw_input
+catch:
+    pass
+
+
 homedirectory = os.environ['HOME']
 
 def get_times(daydiff):
