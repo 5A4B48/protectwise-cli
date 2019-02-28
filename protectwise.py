@@ -1,7 +1,6 @@
 import datetime, time
 from tzlocal import get_localzone
 import requests
-
 import json
 import getpass
 from configparser import ConfigParser
@@ -9,13 +8,15 @@ import os
 
 try:
     input = raw_input
-catch:
+except:
     pass
 
 
-homedirectory = os.environ['HOME']
+homedirectory = os.path.expanduser("~")
 
 def get_times(daydiff):
+    # Takes an integer and returns a list of start
+    # and end times converted into the proper format
     local = get_localzone()
     dts = datetime.datetime.now(local)
     endtime = round(time.mktime(dts.timetuple())*1e3 + dts.microsecond/1e3)
