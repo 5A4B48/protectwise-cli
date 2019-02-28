@@ -53,7 +53,6 @@ def generate_token():
         config.set('Token', 'token', token)
         with open(homedirectory + "/.config/protectwise.ini", "w") as configfile:
             config.write(configfile)
-        configfile.close()
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
 
@@ -132,18 +131,18 @@ def get_ipReputation(ip):
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
 
-def get_event_info():
+def get_event_info(days):
     # Event Collection
     # GET https://api.protectwise.com/api/v1/events
     # Returns a list of events, the events are dictionarie.
     token = get_token()
-    times = get_times(2)
+    start,end = get_times(days)
     try:
         response = requests.get(
             url="https://api.protectwise.com/api/v1/events",
             params={
-                "start": times[0],
-                "end": times[1],
+                "start": start,
+                "end": end,
             },
             headers={
                 "X-Access-Token": token,
