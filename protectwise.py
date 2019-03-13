@@ -177,8 +177,3 @@ def get_pcap(eventid,filename):
 
 
 
-
-# bob = get_event_info()
-# # for b in bob:
-# #     for key, val in b.items():
-# #         print(key.upper(), ":", val, "\n")
