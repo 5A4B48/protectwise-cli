@@ -11,7 +11,6 @@ try:
 except:
     pass
 
-
 homedirectory = os.path.expanduser("~")
 
 
@@ -20,15 +19,18 @@ def get_times(daydiff):
     # and end times converted into the proper format
     local = get_localzone()
     dts = datetime.datetime.now(local)
-    endtime = round(time.mktime(dts.timetuple())*1e3 + dts.microsecond/1e3)
-    starttime = round((dts - datetime.timedelta(days=daydiff)).timestamp() * 1e3)
-    return(starttime, endtime)
+    endtime = round(time.mktime(dts.timetuple()) * 1e3 + dts.microsecond / 1e3)
+    starttime = round(
+        (dts - datetime.timedelta(days=daydiff)).timestamp() * 1e3)
+    return (starttime, endtime)
 
 
 def millisecond_to_date(firstseen, lastseen):
-    fseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(milliseconds=firstseen)
-    lseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(milliseconds=lastseen)
-    return(fseen, lseen)
+    fseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(
+        milliseconds=firstseen)
+    lseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(
+        milliseconds=lastseen)
+    return (fseen, lseen)
 
 
 def generate_token():
@@ -36,7 +38,9 @@ def generate_token():
     # POST https://api.protectwise.com/api/v1/token
     if os.path.isdir(homedirectory + "/.config"):
         if os.path.isfile(homedirectory + "/.config/protectwise.ini"):
-            print("Protectwise config file already exists, if it is stale please delete and re-run init")
+            print(
+                "Protectwise config file already exists, if it is stale please delete and re-run init"
+            )
     email = input("Email: ")
     password = getpass.getpass("Password: ")
     try:
@@ -48,13 +52,13 @@ def generate_token():
             data=json.dumps({
                 "email": email,
                 "password": password
-            })
-        )
+            }))
         token = json.loads(response.content)['token']
         config = ConfigParser()
         config.add_section('Token')
         config.set('Token', 'token', token)
-        with open(homedirectory + "/.config/protectwise.ini", "w") as configfile:
+        with open(homedirectory + "/.config/protectwise.ini",
+                  "w") as configfile:
             config.write(configfile)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
@@ -73,21 +77,23 @@ def get_domainReputation(domain):
     token = get_token()
     try:
         response = requests.get(
-            url="https://api.protectwise.com/api/v1/reputations/domains/" + domain,
+            url="https://api.protectwise.com/api/v1/reputations/domains/" +
+            domain,
             params={
                 "details": "domain,geo",
             },
             headers={
                 "X-Access-Token": token,
-            },
-        )
-        domainInfo = json.loads(response.content)['domain']['additionalProperties'][0]['values'][0]
+            }, )
+        domainInfo = json.loads(
+            response.content)['domain']['additionalProperties'][0]['values'][0]
         domainInfo = {k: v for k, v in domainInfo.items() if v is not None}
         domainInfo = {k: v for k, v in domainInfo.items() if len(v) > 0}
 
         resolveData = json.loads(response.content)['domain']['resolveData'][0]
         resolveData = {k: v for k, v in resolveData.items() if v is not None}
-        seenTimes = millisecond_to_date(resolveData['firstSeen'], resolveData['lastSeen'])
+        seenTimes = millisecond_to_date(resolveData['firstSeen'],
+                                        resolveData['lastSeen'])
         resolveData['firstSeen'] = str(seenTimes[0])
         resolveData['lastSeen'] = str(seenTimes[1])
 
@@ -115,8 +121,7 @@ def get_ipReputation(ip):
             },
             headers={
                 "X-Access-Token": token,
-            },
-        )
+            }, )
         ipInfo = json.loads(response.content)['ip']
         ipInfo = {k: v for k, v in ipInfo.items() if v is not None}
         ipInfo = {k: v for k, v in ipInfo.items() if len(v) > 0}
@@ -151,8 +156,7 @@ def get_event_info(days):
             },
             headers={
                 "X-Access-Token": token,
-            },
-        )
+            }, )
         events = json.loads(response.content)['events']
         for e in events:
             if e['state'] is None:
@@ -174,12 +178,9 @@ def get_pcap(eventid, filename):
             },
             headers={
                 "X-Access-Token": token,
-            },
-        )
+            }, )
         with open(homedirectory + '/Desktop/' + filename + '.pcap', 'wb') as f:
             f.write(response.content)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
-
-
 
