@@ -14,6 +14,7 @@ except:
 
 homedirectory = os.path.expanduser("~")
 
+
 def get_times(daydiff):
     # Takes an integer and returns a list of start
     # and end times converted into the proper format
@@ -21,12 +22,14 @@ def get_times(daydiff):
     dts = datetime.datetime.now(local)
     endtime = round(time.mktime(dts.timetuple())*1e3 + dts.microsecond/1e3)
     starttime = round((dts - datetime.timedelta(days=daydiff)).timestamp() * 1e3)
-    return(starttime,endtime)
+    return(starttime, endtime)
+
 
 def millisecond_to_date(firstseen, lastseen):
     fseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(milliseconds=firstseen)
     lseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(milliseconds=lastseen)
     return(fseen, lseen)
+
 
 def generate_token():
     # Get Token from protectwise
@@ -56,11 +59,13 @@ def generate_token():
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
 
+
 def get_token():
     config = ConfigParser()
     config.read(homedirectory + "/.config/protectwise.ini")
     token = config.get('Token', 'token')
     return token
+
 
 def get_domainReputation(domain):
     # Domain Reputation
@@ -78,7 +83,7 @@ def get_domainReputation(domain):
         )
         domainInfo = json.loads(response.content)['domain']['additionalProperties'][0]['values'][0]
         domainInfo = {k: v for k, v in domainInfo.items() if v is not None}
-        domainInfo = {k: v for k, v in domainInfo.items() if len(v) > 0 }
+        domainInfo = {k: v for k, v in domainInfo.items() if len(v) > 0}
 
         resolveData = json.loads(response.content)['domain']['resolveData'][0]
         resolveData = {k: v for k, v in resolveData.items() if v is not None}
@@ -87,15 +92,16 @@ def get_domainReputation(domain):
         resolveData['lastSeen'] = str(seenTimes[1])
 
         print("Domain Information: \n")
-        for key,val in domainInfo.items():
+        for key, val in domainInfo.items():
             print(key.upper(), ":", val, "\n")
 
         print("Resolved Information: \n")
-        for key,val in resolveData.items():
+        for key, val in resolveData.items():
             print(key.upper(), ":", val, "\n")
 
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
+
 
 def get_ipReputation(ip):
     # IP Reputation
@@ -113,30 +119,29 @@ def get_ipReputation(ip):
         )
         ipInfo = json.loads(response.content)['ip']
         ipInfo = {k: v for k, v in ipInfo.items() if v is not None}
-        ipInfo = {k: v for k, v in ipInfo.items() if len(v) > 0 }
+        ipInfo = {k: v for k, v in ipInfo.items() if len(v) > 0}
 
         geoInfo = json.loads(response.content)['geo']
         geoInfo = {k: v for k, v in geoInfo.items() if v is not None}
         geoInfo = {k: v for k, v in geoInfo.items() if v is not None}
-
-
         print("IP Information: \n")
-        for key,val in ipInfo.items():
+        for key, val in ipInfo.items():
             print(key.upper(), ":", val, "\n")
 
         print("\nGeograhic Information: \n")
-        for key,val in geoInfo.items():
-            print(key.upper() , ":", val, "\n")
+        for key, val in geoInfo.items():
+            print(key.upper(), ":", val, "\n")
 
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
+
 
 def get_event_info(days):
     # Event Collection
     # GET https://api.protectwise.com/api/v1/events
     # Returns a list of events, the events are dictionarie.
     token = get_token()
-    start,end = get_times(days)
+    start, end = get_times(days)
     try:
         response = requests.get(
             url="https://api.protectwise.com/api/v1/events",
@@ -150,13 +155,14 @@ def get_event_info(days):
         )
         events = json.loads(response.content)['events']
         for e in events:
-            if e['state'] == None:
+            if e['state'] is None:
                 yield e
 
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
 
-def get_pcap(eventid,filename):
+
+def get_pcap(eventid, filename):
     # Event Pcap Download
     # GET https://api.protectwise.com/api/v1/events/eventid
     token = get_token()
