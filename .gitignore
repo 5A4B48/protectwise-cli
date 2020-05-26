@@ -3,3 +3,7 @@
 .vs/slnx.sqlite
 .vs/ProjectSettings.json
 .vs/protectwise-cli/v15/.suo
+build/
+protectwise_lib.egg-info/
+dist/
+protectwise/__pycache__

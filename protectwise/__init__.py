@@ -179,7 +179,7 @@ def get_pcap(eventid, filename):
             headers={
                 "X-Access-Token": token,
             }, )
-        with open(homedirectory + '/Desktop/' + filename + '.pcap', 'wb') as f:
+        with open(filename + '.pcap', 'wb') as f:
             f.write(response.content)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
