@@ -6,4 +6,5 @@
 build/
 protectwise_lib.egg-info/
 dist/
-protectwise/__pycache__
+protectwise/_basedir
+.idea

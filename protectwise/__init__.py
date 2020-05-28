@@ -85,25 +85,7 @@ def get_domainReputation(domain):
             headers={
                 "X-Access-Token": token,
             }, )
-        domainInfo = json.loads(
-            response.content)['domain']['additionalProperties'][0]['values'][0]
-        domainInfo = {k: v for k, v in domainInfo.items() if v is not None}
-        domainInfo = {k: v for k, v in domainInfo.items() if len(v) > 0}
-
-        resolveData = json.loads(response.content)['domain']['resolveData'][0]
-        resolveData = {k: v for k, v in resolveData.items() if v is not None}
-        seenTimes = millisecond_to_date(resolveData['firstSeen'],
-                                        resolveData['lastSeen'])
-        resolveData['firstSeen'] = str(seenTimes[0])
-        resolveData['lastSeen'] = str(seenTimes[1])
-
-        print("Domain Information: \n")
-        for key, val in domainInfo.items():
-            print(key.upper(), ":", val, "\n")
-
-        print("Resolved Information: \n")
-        for key, val in resolveData.items():
-            print(key.upper(), ":", val, "\n")
+        return response.content
 
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
@@ -122,20 +104,7 @@ def get_ipReputation(ip):
             headers={
                 "X-Access-Token": token,
             }, )
-        ipInfo = json.loads(response.content)['ip']
-        ipInfo = {k: v for k, v in ipInfo.items() if v is not None}
-        ipInfo = {k: v for k, v in ipInfo.items() if len(v) > 0}
-
-        geoInfo = json.loads(response.content)['geo']
-        geoInfo = {k: v for k, v in geoInfo.items() if v is not None}
-        geoInfo = {k: v for k, v in geoInfo.items() if v is not None}
-        print("IP Information: \n")
-        for key, val in ipInfo.items():
-            print(key.upper(), ":", val, "\n")
-
-        print("\nGeograhic Information: \n")
-        for key, val in geoInfo.items():
-            print(key.upper(), ":", val, "\n")
+        return response.content
 
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
@@ -166,7 +135,7 @@ def get_event_info(days):
         print('HTTP Request failed')
 
 
-def get_pcap(eventid, filename):
+def get_pcap(eventid, filename, basedir=os.getcwd()):
     # Event Pcap Download
     # GET https://api.protectwise.com/api/v1/events/eventid
     token = get_token()
@@ -179,7 +148,7 @@ def get_pcap(eventid, filename):
             headers={
                 "X-Access-Token": token,
             }, )
-        with open(filename + '.pcap', 'wb') as f:
+        with open(os.path.join(basedir, filename) + '.pcap', 'wb') as f:
             f.write(response.content)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
