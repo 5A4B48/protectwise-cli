@@ -1,10 +1,12 @@
-import datetime, time
-from tzlocal import get_localzone
-import requests
-import json
+import datetime
 import getpass
-from configparser import ConfigParser
+import json
 import os
+import time
+from configparser import ConfigParser
+
+import requests
+from tzlocal import get_localzone
 
 try:
     input = raw_input
