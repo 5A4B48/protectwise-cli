@@ -7,8 +7,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="protectwise-lib", # Replace with your own username
-    version="0.0.2",
+    name="protectwise-lib",
+    version="0.0.3",
     author="5A4B48",
     author_email="pw@cybersecintel.ca",
     description="A python Library for interacting with Protectwise API",
@@ -16,6 +16,10 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/5A4B48/protectwise-lib",
     packages=setuptools.find_packages(),
+    install_requires=[
+          'tzlocal',
+          'requests',
+      ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: BSD License",

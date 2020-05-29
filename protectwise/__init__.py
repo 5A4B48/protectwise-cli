@@ -33,14 +33,7 @@ def millisecond_to_date(firstseen, lastseen):
     return (fseen, lseen)
 
 
-def generate_token():
-    # Get Token from protectwise
-    # POST https://api.protectwise.com/api/v1/token
-    if os.path.isdir(homedirectory + "/.config"):
-        if os.path.isfile(homedirectory + "/.config/protectwise.ini"):
-            print(
-                "Protectwise config file already exists, if it is stale please delete and re-run init"
-            )
+def initialize_token():
     email = input("Email: ")
     password = getpass.getpass("Password: ")
     try:
@@ -57,16 +50,40 @@ def generate_token():
         config = ConfigParser()
         config.add_section('Token')
         config.set('Token', 'token', token)
-        with open(homedirectory + "/.config/protectwise.ini",
+        with open(os.path.join(homedirectory, '.config', 'protectwise.ini'),
                   "w") as configfile:
             config.write(configfile)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
 
 
+def generate_token():
+    # Get Token from protectwise
+    # POST https://api.protectwise.com/api/v1/token
+    if os.path.isdir(os.path.join(homedirectory, '.config')):
+        if os.path.isfile(os.path.join(homedirectory,  '.config', 'protectwise.ini')):
+            dothis = input(
+                "Protectwise config file already exists, refresh token? [Y/N]: "
+            )
+            if str(dothis).upper().startswith('Y'):
+                initialize_token()
+            else:
+                print("[*] You selected to not refresh token, aborting")
+        else:
+            print("[*] creating protectwise configuration file as it does not exist")
+            initialize_token()
+    else:
+        creatdir = input("Directory " + os.path.join(homedirectory, '.config') + " does not exist create"
+                                                                                 " it now? [Y/N]:")
+        if str(creatdir).upper().startswith("Y"):
+            os.mkdir(os.path.join(homedirectory, '.config'))
+            print("[+] created directory " + os.path.join(homedirectory, '.config'))
+            initialize_token()
+
+
 def get_token():
     config = ConfigParser()
-    config.read(homedirectory + "/.config/protectwise.ini")
+    config.read(os.path.join(homedirectory, '.config', 'protectwise.ini'))
     token = config.get('Token', 'token')
     return token
 
@@ -78,7 +95,7 @@ def get_domainReputation(domain):
     try:
         response = requests.get(
             url="https://api.protectwise.com/api/v1/reputations/domains/" +
-            domain,
+                domain,
             params={
                 "details": "domain,geo",
             },
@@ -152,4 +169,3 @@ def get_pcap(eventid, filename, basedir=os.getcwd()):
             f.write(response.content)
     except requests.exceptions.RequestException:
         print('HTTP Request failed')
-

@@ -8,3 +8,4 @@ protectwise_lib.egg-info/
 dist/
 protectwise/_basedir
 .idea
+*.pyc
