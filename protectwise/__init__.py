@@ -21,7 +21,7 @@ def get_times(daydiff):
     daystotime = daydiff * 86400
     endtime = int(datetime.datetime.utcnow().timestamp())
     starttime = endtime - daystotime
-    return (starttime, endtime)
+    return (str(starttime), str(endtime))
 
 
 def initialize_token():
