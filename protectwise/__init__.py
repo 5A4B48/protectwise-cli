@@ -6,7 +6,6 @@ import time
 from configparser import ConfigParser
 
 import requests
-from tzlocal import get_localzone
 
 try:
     input = raw_input
@@ -19,20 +18,10 @@ homedirectory = os.path.expanduser("~")
 def get_times(daydiff):
     # Takes an integer and returns a list of start
     # and end times converted into the proper format
-    local = get_localzone()
-    dts = datetime.datetime.now(local)
-    endtime = round(time.mktime(dts.timetuple()) * 1e3 + dts.microsecond / 1e3)
-    starttime = round(
-        (dts - datetime.timedelta(days=daydiff)).timestamp() * 1e3)
+    daystotime = daydiff * 86400
+    endtime = int(datetime.datetime.utcnow().timestamp())
+    starttime = endtime - daystotime
     return (starttime, endtime)
-
-
-def millisecond_to_date(firstseen, lastseen):
-    fseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(
-        milliseconds=firstseen)
-    lseen = datetime.datetime(1970, 1, 1) + datetime.timedelta(
-        milliseconds=lastseen)
-    return (fseen, lseen)
 
 
 def initialize_token():
