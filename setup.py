@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="protectwise-lib",
-    version="0.0.5",
+    version="0.0.6",
     author="5A4B48",
     author_email="pw@cybersecintel.ca",
     description="A python Library for interacting with Protectwise API",
