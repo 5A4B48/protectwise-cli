@@ -19,8 +19,10 @@ def get_times(daydiff):
     # Takes an integer and returns a list of start
     # and end times converted into the proper format
     daystotime = daydiff * 86400
-    endtime = int(datetime.datetime.utcnow().timestamp())
-    starttime = endtime - daystotime
+    et = int(datetime.datetime.utcnow().timestamp())
+    st = et - daystotime
+    endtime = et * 1000
+    starttime = st * 1000
     return (str(starttime), str(endtime))
 
 
