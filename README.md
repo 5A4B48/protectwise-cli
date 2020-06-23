@@ -1,5 +1,8 @@
-# protectwise-cli
-A python cli tool for interacting with protectwise api. 
+# protectwise-lib
+This tool can currently do the following
+- Initialize a token for use with protectwise
+- Get event info for events in your dashboard
+- Download pcaps for the events in your dashboard
+- Use your token to check for ip address information
 
-
-WIP, this tool is not ready for production but is a WIP. 
+More info and coverage on what parts of the protectwise api are covered will be added here shortly. 
