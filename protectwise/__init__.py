@@ -18,6 +18,7 @@ homedirectory = os.path.expanduser("~")
 def get_times(daydiff):
     # Takes an integer and returns a list of start
     # and end times converted into the proper format
+    #//Todo make this more granular to support hours, times, ranges, etc. 
     daystotime = daydiff * 86400
     et = int(datetime.datetime.utcnow().timestamp())
     st = et - daystotime
